@@ -9,10 +9,11 @@ namespace StringCalculator.Implementation
          {
              if (string.IsNullOrWhiteSpace(stringNumbers)) 
                  return 0;
-
+             var delimiters = new[] {',','\n'};
              var sum = stringNumbers
-                 .Split(',')
-                 .Select(Int32.Parse)
+                 .Split(delimiters)
+                 .Where(s=>!string.IsNullOrWhiteSpace(s))
+                 .Select(s=>Int32.Parse(s.Trim()))
                  .Sum();
 
              return sum;

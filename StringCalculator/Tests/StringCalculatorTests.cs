@@ -14,6 +14,9 @@ namespace StringCalculator.Tests
         [TestCase("1,2",3)]
         [TestCase("1,2,3",6)]
         [TestCase("4,2,3,2",11)]
+        [TestCase("4,2,3\n2",11)]
+        [TestCase("\n",0)]
+        [TestCase("2\n",2)]
         public void When_adding_numbers_in_a_string_then_they_are_summed(string input, int expected)
         {
             // Arrange
