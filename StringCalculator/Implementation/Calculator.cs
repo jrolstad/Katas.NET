@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Directus.Extensions.Core;
 
 namespace StringCalculator.Implementation
 {
@@ -27,11 +28,26 @@ namespace StringCalculator.Implementation
              }
 
              // Summarize them
-             var sum = lines
+             var parsedNumbers = lines
                  .Where(line => !line.StartsWith(delimiterLineIndicator))
                  .SelectMany(line => line.Split(delimiters.ToArray()))
                  .Where(s => !string.IsNullOrWhiteSpace(s))
                  .Select(s => Int32.Parse(s.Trim()))
+                 .ToArray();
+
+             // Validate for negative numbers
+             var negativeNumbers = parsedNumbers
+                 .Where(number => number < 0)
+                 .ToArray();
+
+             if (negativeNumbers.Any())
+             {
+                 var numbers = string.Join(",", negativeNumbers);
+                 var message = "Only positive numbers can be added. Negative values are: {0}".StringFormat(numbers);
+                 throw new ArgumentOutOfRangeException("stringNumbers", message);
+             }
+
+             var sum = parsedNumbers
                  .Sum();       
 
              return sum;
