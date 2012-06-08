@@ -54,11 +54,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementation\ApplicationController.cs" />
     <Compile Include="Implementation\Calculator.cs" />
     <Compile Include="Implementation\ConsoleNotifier.cs" />
+    <Compile Include="Implementation\ConsoleUserInput.cs" />
     <Compile Include="Implementation\INotifier.cs" />
+    <Compile Include="Implementation\IUserInput.cs" />
     <Compile Include="Implementation\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\ApplicationControllerTests.cs" />
     <Compile Include="Tests\StringCalculatorTests.cs" />
   </ItemGroup>
   <ItemGroup>

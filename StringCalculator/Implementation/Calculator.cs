@@ -10,22 +10,8 @@ namespace StringCalculator.Implementation
         private readonly INotifier _notifier;
         private const string delimiterLineIndicator = "//";
 
-        public Calculator(INotifier notifier)
-        {
-            _notifier = notifier;
-        }
 
-        public int Add(string stringNumbers)
-        {
-            var sum = AddMethod(stringNumbers);
-
-            var message = "The result was {0}".StringFormat(sum);
-            _notifier.Notify(message);
-
-            return sum;
-        }
-
-        public int AddMethod(string stringNumbers)
+        public virtual int Add(string stringNumbers)
         {
             // If something we can't parse, then return zero
             if (string.IsNullOrWhiteSpace(stringNumbers))

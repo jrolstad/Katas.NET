@@ -29,14 +29,13 @@ namespace StringCalculator.Tests
         {
             // Arrange
             var notifier = MockRepository.GenerateStub<INotifier>();
-            var calculator = new Calculator(notifier);
+            var calculator = new Calculator();
 
             // Act
             var result = calculator.Add(input);
 
             // Assert
             Assert.That(result,Is.EqualTo(expected));
-            notifier.AssertWasCalled(n=>n.Notify("The result was {0}".StringFormat(expected)));
 
         }
 
@@ -54,7 +53,7 @@ namespace StringCalculator.Tests
         public void Then_adding_numbers_only_positive_numbers_are_allowed(string input, bool shouldThrowException,string excpectedMessage)
         {
             // Arrange
-            var calculator = new Calculator(MockRepository.GenerateStub<INotifier>());
+            var calculator = new Calculator();
 
             Exception thrownException = null;
 
