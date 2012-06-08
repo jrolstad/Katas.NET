@@ -1,0 +1,1 @@
+﻿This kata is found at http://content.codersdojo.org/code-kata-catalogue/fizz-buzz/
