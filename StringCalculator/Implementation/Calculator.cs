@@ -7,59 +7,75 @@ namespace StringCalculator.Implementation
 {
     public class Calculator
     {
-        const string delimiterLineIndicator = "//";
+        private readonly INotifier _notifier;
+        private const string delimiterLineIndicator = "//";
 
-         public int Add(string stringNumbers)
-         {
-             // If something we can't parse, then return zero
-             if (string.IsNullOrWhiteSpace(stringNumbers)) 
-                 return 0;
+        public Calculator(INotifier notifier)
+        {
+            _notifier = notifier;
+        }
 
-             // Seperate into lines
-             var lines = ParseLines(stringNumbers);
+        public int Add(string stringNumbers)
+        {
+            var sum = AddMethod(stringNumbers);
 
-             // Get the delimiters
-             var allowedDelimiters = new List<string> { "," };
-             var userDefinedDelimiters = GetUserDefinedDelimiters(lines);
-             allowedDelimiters.AddRange(userDefinedDelimiters);
+            var message = "The result was {0}".StringFormat(sum);
+            _notifier.Notify(message);
 
-             // Convert the numbers
-             var parsedNumbers = ParseNumbers(allowedDelimiters, lines);
+            return sum;
+        }
 
-             // Validate for negative numbers
-             Validate(parsedNumbers);
+        public int AddMethod(string stringNumbers)
+        {
+            // If something we can't parse, then return zero
+            if (string.IsNullOrWhiteSpace(stringNumbers))
+                return 0;
 
-             // Sum them
-             var sum = SummarizeNumbers(parsedNumbers);       
+            // Seperate into lines
+            string[] lines = ParseLines(stringNumbers);
 
-             return sum;
-         }
+            // Get the delimiters
+            var allowedDelimiters = new List<string> {","};
+            IEnumerable<string> userDefinedDelimiters = GetUserDefinedDelimiters(lines);
+            allowedDelimiters.AddRange(userDefinedDelimiters);
+
+            // Convert the numbers
+            int[] parsedNumbers = ParseNumbers(allowedDelimiters, lines);
+
+            // Validate for negative numbers
+            Validate(parsedNumbers);
+
+            // Sum them
+            var sum = SummarizeNumbers(parsedNumbers);
+
+            return sum;
+        }
 
         private static int SummarizeNumbers(int[] parsedNumbers)
         {
             const int upperBound = 1000;
             return parsedNumbers
-                .Where(n=> n<=upperBound)
+                .Where(n => n <= upperBound)
                 .Sum();
         }
 
         private static string[] ParseLines(string stringNumbers)
         {
             const char newLineSeperator = '\n';
-            var lines = stringNumbers.Split(newLineSeperator);
+            string[] lines = stringNumbers.Split(newLineSeperator);
             return lines;
         }
 
         private static void Validate(int[] parsedNumbers)
         {
-            var negativeNumbers = parsedNumbers
+            int[] negativeNumbers = parsedNumbers
                 .Where(number => number < 0)
                 .ToArray();
 
             if (negativeNumbers.Any())
             {
-                var numbers = string.Join(",", negativeNumbers);
-                var message = "Only positive numbers can be added. Negative values are: {0}".StringFormat(numbers);
+                string numbers = string.Join(",", negativeNumbers);
+                string message = "Only positive numbers can be added. Negative values are: {0}".StringFormat(numbers);
                 throw new ArgumentOutOfRangeException("parsedNumbers", message);
             }
         }
@@ -68,7 +84,7 @@ namespace StringCalculator.Implementation
         {
             return lines
                 .Where(line => !line.StartsWith(delimiterLineIndicator))
-                .SelectMany(line => line.Split(delimiters.ToArray(),StringSplitOptions.RemoveEmptyEntries))
+                .SelectMany(line => line.Split(delimiters.ToArray(), StringSplitOptions.RemoveEmptyEntries))
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .Select(s => Int32.Parse(s.Trim()))
                 .ToArray();
@@ -80,10 +96,10 @@ namespace StringCalculator.Implementation
 
             if (lines[0].StartsWith(delimiterLineIndicator))
             {
-                var delimiter = lines[0]
+                string delimiter = lines[0]
                     .Replace(delimiterLineIndicator, "")
                     .Replace("[", "");
-                var definedDelimiters = delimiter.Split(']');
+                string[] definedDelimiters = delimiter.Split(']');
 
                 delimiters.AddRange(definedDelimiters);
             }

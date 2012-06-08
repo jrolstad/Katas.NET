@@ -1,5 +1,7 @@
 ﻿using System;
+using Directus.Extensions.Core;
 using NUnit.Framework;
+using Rhino.Mocks;
 using StringCalculator.Implementation;
 
 namespace StringCalculator.Tests
@@ -26,13 +28,16 @@ namespace StringCalculator.Tests
         public void When_adding_numbers_in_a_string_then_they_are_summed(string input, int expected)
         {
             // Arrange
-            var calculator = new Calculator();
+            var notifier = MockRepository.GenerateStub<INotifier>();
+            var calculator = new Calculator(notifier);
 
             // Act
             var result = calculator.Add(input);
 
             // Assert
             Assert.That(result,Is.EqualTo(expected));
+            notifier.AssertWasCalled(n=>n.Notify("The result was {0}".StringFormat(expected)));
+
         }
 
 
@@ -49,7 +54,8 @@ namespace StringCalculator.Tests
         public void Then_adding_numbers_only_positive_numbers_are_allowed(string input, bool shouldThrowException,string excpectedMessage)
         {
             // Arrange
-            var calculator = new Calculator();
+            var calculator = new Calculator(MockRepository.GenerateStub<INotifier>());
+
             Exception thrownException = null;
 
             // Act
