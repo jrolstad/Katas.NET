@@ -13,12 +13,16 @@ namespace StringCalculator.Tests
         [TestCase(null,0)]
         [TestCase("1",1)]
         [TestCase("1,2",3)]
+        [TestCase("2,1000",1002)]
+        [TestCase("2,1001",2)]
         [TestCase("1,2,3",6)]
         [TestCase("4,2,3,2",11)]
         [TestCase("4,2,3\n2",11)]
         [TestCase("\n",0)]
         [TestCase("2\n",2)]
         [TestCase("//;\n1;2", 3)]
+        [TestCase("//[foo]\n1foo2", 3)]
+        [TestCase("//[foo][bar]\n1foo2bar2", 5)]
         public void When_adding_numbers_in_a_string_then_they_are_summed(string input, int expected)
         {
             // Arrange

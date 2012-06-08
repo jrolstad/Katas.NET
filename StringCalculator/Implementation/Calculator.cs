@@ -17,20 +17,24 @@ namespace StringCalculator.Implementation
              var lines = stringNumbers.Split(newLineSeperator);
 
              // Known set of delimiters
-             var delimiters = new List<char>{ ','};
+             var delimiters = new List<string>{ ","};
 
              // Get the delimiter
              const string delimiterLineIndicator = "//";
              if(lines[0].StartsWith(delimiterLineIndicator))
              {
-                 var delimiter = lines[0].ToCharArray().Last();
-                 delimiters.Add(delimiter);
+                 var delimiter = lines[0]
+                     .Replace("//", "")
+                     .Replace("[", "");
+                 var definedDelimiters = delimiter.Split(']');
+
+                 delimiters.AddRange(definedDelimiters);
              }
 
              // Summarize them
              var parsedNumbers = lines
                  .Where(line => !line.StartsWith(delimiterLineIndicator))
-                 .SelectMany(line => line.Split(delimiters.ToArray()))
+                 .SelectMany(line => line.Split(delimiters.ToArray(),StringSplitOptions.RemoveEmptyEntries))
                  .Where(s => !string.IsNullOrWhiteSpace(s))
                  .Select(s => Int32.Parse(s.Trim()))
                  .ToArray();
@@ -48,6 +52,7 @@ namespace StringCalculator.Implementation
              }
 
              var sum = parsedNumbers
+                 .Where(n=> n<=1000)
                  .Sum();       
 
              return sum;
